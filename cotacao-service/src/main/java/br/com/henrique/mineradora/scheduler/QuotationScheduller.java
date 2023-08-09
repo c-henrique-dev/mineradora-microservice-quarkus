@@ -17,4 +17,5 @@ public class QuotationScheduller {
     void scheduller() {
         quotationService.getCurrencyPrice();
     }
+
 }

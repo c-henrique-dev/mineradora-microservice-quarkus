@@ -1,10 +1,10 @@
 package br.com.henrique.mineradora.service;
 
 import br.com.henrique.mineradora.client.CurrencyPriceClient;
-import br.com.henrique.mineradora.dto.CurrencyPriceDto;
-import br.com.henrique.mineradora.dto.QuotationDto;
 import br.com.henrique.mineradora.entity.QuotationEntity;
 import br.com.henrique.mineradora.message.KafkaEvents;
+import br.com.henrique.mineradora.dto.CurrencyPriceDto;
+import br.com.henrique.mineradora.dto.QuotationDto;
 import br.com.henrique.mineradora.repository.QuotationRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -17,11 +17,11 @@ import java.util.List;
 public class QuotationService {
     @Inject
     @RestClient
-    private CurrencyPriceClient currencyPriceClient;
+    CurrencyPriceClient currencyPriceClient;
     @Inject
-    private QuotationRepository quotationRepository;
+     QuotationRepository quotationRepository;
     @Inject
-    private KafkaEvents kafkaEvents;
+    KafkaEvents kafkaEvents;
 
     public void getCurrencyPrice() {
         CurrencyPriceDto currencyPriceInfo = currencyPriceClient.getPriceByPair("USD-BRL");

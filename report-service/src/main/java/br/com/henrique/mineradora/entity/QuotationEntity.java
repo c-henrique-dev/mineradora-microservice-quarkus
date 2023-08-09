@@ -13,14 +13,14 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class QuotationEntity {
+
     @Id
     @GeneratedValue
     private UUID id;
+
     private Date date;
+
     @Column(name = "currency_price")
     private BigDecimal currencyPrice;
-    @Column(name = "pct_change")
-    private String pctChange;
-    private String pair;
 
 }
