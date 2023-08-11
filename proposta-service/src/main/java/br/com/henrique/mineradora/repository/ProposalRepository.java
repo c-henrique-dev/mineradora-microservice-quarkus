@@ -10,11 +10,8 @@ import java.util.UUID;
 @ApplicationScoped
 public class ProposalRepository implements PanacheRepository<ProposalEntity> {
 
-    public Optional<ProposalEntity> findByCustomer(String customer){
-        return Optional.of(find("customer", customer).firstResult());
-    }
-    public ProposalEntity findByUuid(UUID uuid) {
-        return find("id", uuid).firstResult();
+    public Optional<ProposalEntity> findByUuid(UUID uuid) {
+        return find("id", uuid).firstResultOptional();
     }
     public void deleteByUuid(UUID uuid) {
         delete("id", uuid);

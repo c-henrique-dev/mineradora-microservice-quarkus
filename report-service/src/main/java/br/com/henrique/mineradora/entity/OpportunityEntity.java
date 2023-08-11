@@ -21,7 +21,8 @@ public class OpportunityEntity {
     @Column(name = "proposal_id")
     private UUID proposalId;
 
-    private String customer;
+    @Column(name = "client_id")
+    private UUID clientId;
 
     @Column(name = "price_tonne")
     private BigDecimal priceTonne;

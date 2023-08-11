@@ -16,7 +16,7 @@ public class ProposalDto {
 
     private UUID proposalId;
 
-    private String customer;
+    private UUID client_id;
 
     private BigDecimal priceTonne;
 

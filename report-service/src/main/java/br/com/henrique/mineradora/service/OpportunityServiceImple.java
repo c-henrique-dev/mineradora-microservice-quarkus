@@ -1,8 +1,6 @@
 package br.com.henrique.mineradora.service;
 
-import br.com.henrique.mineradora.dto.OpportunityDto;
-import br.com.henrique.mineradora.dto.ProposalDto;
-import br.com.henrique.mineradora.dto.QuotationDto;
+import br.com.henrique.mineradora.dto.*;
 import br.com.henrique.mineradora.entity.OpportunityEntity;
 import br.com.henrique.mineradora.entity.QuotationEntity;
 import br.com.henrique.mineradora.repository.OpportunityRepository;
@@ -10,6 +8,7 @@ import br.com.henrique.mineradora.repository.QuotationRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +24,9 @@ public class OpportunityServiceImple implements OpportunityService {
     @Inject
     OpportunityRepository opportunityRepository;
 
+    @Inject
+    ClientService clientService;
+
     @Override
     public void buildOpportunity(ProposalDto proposal) {
         List<QuotationEntity> quotationEntities = quotationRepository.findAll().list();
@@ -34,7 +36,7 @@ public class OpportunityServiceImple implements OpportunityService {
 
         opportunity.setDate(new Date());
         opportunity.setProposalId(proposal.getProposalId());
-        opportunity.setCustomer(proposal.getCustomer());
+        opportunity.setClientId(proposal.getClient_id());
         opportunity.setPriceTonne(proposal.getPriceTonne());
         opportunity.setLastDollarQuotation(quotationEntities.get(0).getCurrencyPrice());
 
@@ -55,17 +57,20 @@ public class OpportunityServiceImple implements OpportunityService {
     }
 
     @Override
-    public List<OpportunityDto> generateOpportunityData() {
+    public List<OpportunityClientDto> generateOpportunityData() {
 
-        List<OpportunityDto> opportunities = new ArrayList<>();
+        List<OpportunityClientDto> opportunities = new ArrayList<>();
+
 
         opportunityRepository
                 .findAll()
                 .stream()
                 .forEach(item -> {
-                    opportunities.add(OpportunityDto.builder()
+                    ClientDto clientDto = this.clientService.findByUuid(item.getClientId());
+
+                    opportunities.add(OpportunityClientDto.builder()
                             .proposalId(item.getProposalId())
-                            .customer(item.getCustomer())
+                            .client(clientDto)
                             .priceTonne(item.getPriceTonne())
                             .lastDollarQuotation(item.getLastDollarQuotation())
                             .build());

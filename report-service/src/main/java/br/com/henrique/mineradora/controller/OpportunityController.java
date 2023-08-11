@@ -1,5 +1,6 @@
 package br.com.henrique.mineradora.controller;
 
+import br.com.henrique.mineradora.dto.OpportunityClientDto;
 import br.com.henrique.mineradora.dto.OpportunityDto;
 import br.com.henrique.mineradora.service.OpportunityService;
 import io.quarkus.security.Authenticated;
@@ -21,7 +22,7 @@ public class OpportunityController {
     @GET
     @Path("/data")
     @RolesAllowed({"user"})
-    public List<OpportunityDto> generateReport(){
+    public List<OpportunityClientDto> generateReport(){
         return opportunityService.generateOpportunityData();
 
     }

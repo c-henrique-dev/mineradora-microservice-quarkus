@@ -1,5 +1,7 @@
 package br.com.henrique.mineradora.service;
 
+import br.com.henrique.mineradora.dto.ClientDto;
+import br.com.henrique.mineradora.dto.ProposalClientDetailsDto;
 import br.com.henrique.mineradora.dto.ProposalDetailsDto;
 import br.com.henrique.mineradora.dto.ProposalDto;
 import br.com.henrique.mineradora.entity.ProposalEntity;
@@ -12,6 +14,7 @@ import jakarta.ws.rs.NotFoundException;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -21,30 +24,34 @@ public class ProposalServiceImple implements ProposalService {
     ProposalRepository proposalRepository;
 
     @Inject
+    ClientService clientService;
+
+    @Inject
     KafkaEvent kafkaMessages;
 
     @Override
-    public ProposalDetailsDto findFullProposal(UUID id) {
-        ProposalEntity proposal = proposalRepository.findByUuid(id);
+    public ProposalClientDetailsDto findFullProposal(UUID id) {
+        ProposalEntity proposal = proposalRepository.findByUuid(id)
+                .orElseThrow(() -> new NotFoundException("Proposal not found"));
 
-        if(proposal != null) {
-            return ProposalDetailsDto.builder()
-                    .proposalId(proposal.getId())
-                    .proposalValidityDays(proposal.getProposalValidityDays())
-                    .country(proposal.getCountry())
-                    .priceTonne(proposal.getPriceTonne())
-                    .customer(proposal.getCustomer())
-                    .tonnes(proposal.getTonnes())
-                    .build();
-        } else {
-            throw new NotFoundException("Proposal not found");
-        }
+        ClientDto clientDto = this.clientService.findByUuid(proposal.getClient_id());
+
+                return ProposalClientDetailsDto.builder()
+                        .proposalId(proposal.getId())
+                        .proposalValidityDays(proposal.getProposalValidityDays())
+                        .country(proposal.getCountry())
+                        .client(clientDto)
+                        .priceTonne(proposal.getPriceTonne())
+                        .tonnes(proposal.getTonnes())
+                        .build();
+
     }
 
     @Override
     @Transactional
     public ProposalDto createNewProposal(ProposalDetailsDto proposalDetailsDTO) {
         ProposalDto proposal = buildAndSaveNewProposal(proposalDetailsDTO);
+        System.out.println(proposal);
         kafkaMessages.sendNewKafkaEvent(proposal);
         return proposal;
 
@@ -53,13 +60,13 @@ public class ProposalServiceImple implements ProposalService {
     @Override
     @Transactional
     public void removeProposal(UUID id) {
-        ProposalEntity proposal = proposalRepository.findByUuid(id);
+        Optional<ProposalEntity> proposal = proposalRepository.findByUuid(id);
         if(proposal != null) {
 
-            proposalRepository.deleteByUuid(proposal.getId());
+            proposalRepository.deleteByUuid(proposal.get().getId());
 
         } else {
-            throw new NotFoundException("Proposal not found");
+            throw new RuntimeException("Proposal not found");
         }
     }
 
@@ -74,9 +81,9 @@ public class ProposalServiceImple implements ProposalService {
             proposalRepository.persist(proposal);
 
             return ProposalDto.builder()
-                    .proposalId(proposalRepository.findByCustomer(proposal.getCustomer()).get().getId())
+                    .proposalId(clientService.findByUuid(proposal.getClient_id()).getId())
                     .priceTonne(proposal.getPriceTonne())
-                    .customer(proposal.getCustomer())
+                    .client_id(proposal.getClient_id())
                     .build();
 
         } catch (Exception e) {

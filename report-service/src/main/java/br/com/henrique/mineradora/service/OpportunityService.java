@@ -1,5 +1,6 @@
 package br.com.henrique.mineradora.service;
 
+import br.com.henrique.mineradora.dto.OpportunityClientDto;
 import br.com.henrique.mineradora.dto.OpportunityDto;
 import br.com.henrique.mineradora.dto.ProposalDto;
 import br.com.henrique.mineradora.dto.QuotationDto;
@@ -14,6 +15,6 @@ public interface OpportunityService {
 
     void saveQuotation(QuotationDto quotation);
 
-    List<OpportunityDto> generateOpportunityData();
+    List<OpportunityClientDto> generateOpportunityData();
 
 }

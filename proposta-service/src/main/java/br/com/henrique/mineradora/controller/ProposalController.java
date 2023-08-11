@@ -1,7 +1,10 @@
 package br.com.henrique.mineradora.controller;
 
+import br.com.henrique.mineradora.dto.ClientDto;
+import br.com.henrique.mineradora.dto.ProposalClientDetailsDto;
 import br.com.henrique.mineradora.dto.ProposalDetailsDto;
 import br.com.henrique.mineradora.dto.ProposalDto;
+import br.com.henrique.mineradora.service.ClientService;
 import br.com.henrique.mineradora.service.ProposalService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
@@ -10,6 +13,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +34,7 @@ public class ProposalController {
     @GET
     @Path("/{id}")
     @RolesAllowed({"user"})
-    public ProposalDetailsDto findDetailsProposal(@PathParam("id") UUID id){
+    public ProposalClientDetailsDto findDetailsProposal(@PathParam("id") UUID id){
         return proposalService.findFullProposal(id);
     }
 
@@ -41,7 +45,6 @@ public class ProposalController {
         LOG.info("--- Recebendo Proposta de Compra ---");
 
         ProposalDto proposalDetailsDto = proposalService.createNewProposal(proposalDetails);
-        System.out.println(proposalDetailsDto);
 
         UriBuilder uriBuilder = UriBuilder.fromPath("/api/proposal/{id}");
         URI uri = uriBuilder.build(proposalDetailsDto.getProposalId());

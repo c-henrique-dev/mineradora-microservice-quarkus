@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -13,9 +14,9 @@ import java.math.BigDecimal;
 @Jacksonized
 public class OpportunityDTO {
 
-    private Long proposalId;
+    private UUID proposalId;
 
-    private String customer;
+    private ClientDto client;
 
     private BigDecimal priceTonne;
 

@@ -21,6 +21,7 @@ public class KafkaEvent {
     @Transactional
     public void receiveProposal(ProposalDto proposal){
         LOG.info("-- Recebendo Nova Proposta do Tópico Kafka --");
+        System.out.println(proposal);
         opportunityService.buildOpportunity(proposal);
     }
 

@@ -19,7 +19,7 @@ public class ProposalEntity {
     @GeneratedValue
     private UUID id;
 
-    private String customer;
+    private UUID client_id;
 
     @Column(name = "price_tonne")
     private BigDecimal priceTonne;
