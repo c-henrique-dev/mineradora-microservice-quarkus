@@ -12,12 +12,14 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.apache.commons.beanutils.BeanUtils;
+import org.eclipse.microprofile.opentracing.Traced;
 
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
+@Traced
 public class ProposalServiceImple implements ProposalService {
 
     @Inject
@@ -51,7 +53,6 @@ public class ProposalServiceImple implements ProposalService {
     @Transactional
     public ProposalDto createNewProposal(ProposalDetailsDto proposalDetailsDTO) {
         ProposalDto proposal = buildAndSaveNewProposal(proposalDetailsDTO);
-        System.out.println(proposal);
         kafkaMessages.sendNewKafkaEvent(proposal);
         return proposal;
 
@@ -77,7 +78,6 @@ public class ProposalServiceImple implements ProposalService {
             ProposalEntity proposal = new ProposalEntity();
             proposal.setCreated(new Date());
             BeanUtils.copyProperties(proposal, proposalDetailsDto);
-            System.out.println(proposal.getTonnes());
             proposalRepository.persist(proposal);
 
             return ProposalDto.builder()

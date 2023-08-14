@@ -8,15 +8,15 @@ import lombok.extern.jackson.Jacksonized;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Jacksonized
+@AllArgsConstructor
 @Builder
 @Data
-@AllArgsConstructor
-@Jacksonized
-public class ProposalDetailsDTO {
+public class ProposalClientDetailsDto {
 
     private UUID proposalId;
 
-    private UUID client_id;
+    private ClientDto client;
 
     private BigDecimal priceTonne;
 
@@ -25,5 +25,4 @@ public class ProposalDetailsDTO {
     private String country;
 
     private Integer proposalValidityDays;
-
 }

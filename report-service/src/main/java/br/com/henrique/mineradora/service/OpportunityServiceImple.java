@@ -8,6 +8,7 @@ import br.com.henrique.mineradora.repository.QuotationRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.opentracing.Traced;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
+@Traced
 public class OpportunityServiceImple implements OpportunityService {
 
     @Inject
@@ -67,7 +69,6 @@ public class OpportunityServiceImple implements OpportunityService {
                 .stream()
                 .forEach(item -> {
                     ClientDto clientDto = this.clientService.findByUuid(item.getClientId());
-
                     opportunities.add(OpportunityClientDto.builder()
                             .proposalId(item.getProposalId())
                             .client(clientDto)

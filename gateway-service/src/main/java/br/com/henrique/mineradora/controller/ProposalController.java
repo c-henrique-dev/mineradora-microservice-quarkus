@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 
 @Path("/api/trade")
@@ -19,7 +20,7 @@ public class ProposalController {
     @GET
     @Path("/{id}")
     @RolesAllowed({"user"})
-    public Response getProposalDetailsById(@PathParam("id") long id){
+    public Response getProposalDetailsById(@PathParam("id") UUID id){
         proposalService.getProposalDetailsById(id);
 
             return Response.ok(proposalService.getProposalDetailsById(id),
@@ -36,7 +37,7 @@ public class ProposalController {
     @DELETE
     @Path("/remove/{id}")
     @RolesAllowed("admin")
-    public Response removeProposal(@PathParam("id") long id){
+    public Response removeProposal(@PathParam("id") UUID id){
         return proposalService.removeProposal(id);
 
 
